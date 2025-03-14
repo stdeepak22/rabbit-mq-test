@@ -63,9 +63,9 @@ This repository contains a test setup for RabbitMQ. The project is structured in
 
     3rd argument is gap in between in miliseconds. default is 2000 (2seconds) 
 
-if we are running multiple producer, and single consumer, no issue. no load on consumer, as it has to process and consumer messages produced by both producers.
+If we are running multiple producers, and single consumer, lets see how it will work - more load on consumer, as it has to process and consume messages produced by both producers.
 
-When we have multiple consumer, in that case, they will pick 1-by-1, eg. if we have two consumes, they will pick messages 1-by-1, so may be all even position messages will go to one consumer, and all odd will go to other.
+When we have multiple consumers, in that case, they will pick 1-by-1, from Queue (produced by any number of producers) eg. if we have two consumers, they will pick message from Queue 1-by-1, so may be all even position messages will go to one consumer, and all odd will go to other, while this all is running smootly, if any consumer stopped (killed, or exited), single consumer will consumer all the messages from Queue.
 
 ## Folder Structure
 
@@ -74,7 +74,7 @@ rabbit-mq-test/
 ├── rabbitmq/
 │   ├── single-node/
 │   │   └── (Docker compose and entry file for creating user/permissions)
-│   └── multi-node/ **(coming soon)**
+│   └── multi-node/ ⚠️⚠️ coming soon
 │       └── (docker compose and entry file for cluster, and creating user/permission)
 ├── consumer/
 │   └── (Consumer code and scripts)
