@@ -1,0 +1,19 @@
+{
+  "name": "rabbitmq-producer",
+  "version": "1.0.0",
+  "type": "module",
+  "author": "Deepak Sharma<stdeepak22@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.5"
+  },
+  "keywords": [
+    "rabbitmq",
+    "producer",
+    "amqplib",
+    "nodejs",
+    "javascript",
+    "docker"
+  ],
+  "description": "RabbitMQ Producer using amqplib in NodeJS"
+}

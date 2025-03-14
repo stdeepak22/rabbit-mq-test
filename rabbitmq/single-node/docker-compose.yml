@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:4.1-rc-management-alpine
+    container_name: rabbitmq-single-node
+    entrypoint: [ '/etc/local_config/entrypoint.sh' ]
+    hostname: rabbitmq-single-node
+    networks:
+      - rabbitmq_network
+    ports:
+      - "5672:5672" #default rabbitmq port
+      - "15672:15672" #default rabbitmq management port
+    environment:
+      QUEUE_NAME: test_queue #change this to a queue name of your choice, this is being used in create_user.sh to create a user with permissions to this queue, no other use for this variable
+      RABBITMQ_DEFAULT_USER: admin #change this to a username of your choice
+      RABBITMQ_DEFAULT_PASS: password #change this to a password of your choice
+      RABBITMQ_ERLANG_COOKIE: secret_cookie #change this to a random string, not really needed for single node, but good practice, and will be needed for clustering in clustering example
+    volumes:
+      - ./_config:/etc/local_config #volumn mount to docker location, so we can use our custom entrypoint.sh
+      - rabbitmq_data:/var/lib/rabbitmq
+
+networks:
+  rabbitmq_network:
+    driver: bridge
+
+volumes:
+  rabbitmq_data:
