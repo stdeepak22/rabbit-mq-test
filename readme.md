@@ -2,7 +2,7 @@
 
 This repository contains a test setup for RabbitMQ. The project is structured into three main folders:
 
-1. **RabbitMQ**: This folder contains the Docker compose files for RabbitMQ, single node, and multi for cluster.
+1. **RabbitMQ**: This folder contains the Docker compose files for [RabbitMQ](https://www.rabbitmq.com/), single node, and multi for cluster.
 2. **Consumer**: This folder contains the code and scripts for the consumer that listens to the RabbitMQ messages.
 3. **Producer**: This folder contains the code and scripts for the producer that sends messages to RabbitMQ.
 

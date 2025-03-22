@@ -2,7 +2,7 @@ import { connect } from 'amqplib';
 
 // user 'consumer' is created when starting docker container with password, file: create_user.sh
 // this user must have read permissions on the queue
-const RABBITMQ_URL = 'amqp://consumer:consumer-password@localhost';
+const RABBITMQ_URL = 'amqp://consumer:consumer-password@localhost?frameMax=0x2000';
 
 const QUEUE_NAME = 'test_queue';
 
@@ -26,7 +26,7 @@ async function startAndConsume() {
             }
         });
     } catch (error) {
-        console.error(`Error: ${error}`);
+        console.error(`Error: ${error}`, error);
         process.exit(1);
     }
 }

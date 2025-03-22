@@ -1,0 +1,91 @@
+services:
+  traefik:
+    image: "traefik:v2.5"
+    networks:
+      - rabbitmq_network
+    container_name: "traefik"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.amqp.address=:5672"
+    ports:
+      - "5672:5672"
+      - "8080:8080"
+
+  rabbitmq-1:
+    image: rabbitmq:4.1-rc-management-alpine
+    container_name: node-1
+    entrypoint: [ '/etc/local_config/entry_create_user.sh' ]
+    hostname: rabbitmq-node-1
+    networks:
+      - rabbitmq_network
+    ports:
+      # - "5673:5672" #default rabbitmq port
+      - "15672:15672" #default rabbitmq management port, and notice we are exposing for node-1 only, we will not expose for node-2 and node-3
+
+    environment:
+      QUEUE_NAME: ${TEST_QUEUE_NAME} # getting queue name from .env file this time.
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE} #getting from env file, and it should be same for all nodes to form a cluster
+    volumes:
+      - ./_config:/etc/local_config #volumn mount to docker location, so we can use our custom entrypoint.sh
+      - rabbitmq_data_1:/var/lib/rabbitmq
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.rabbitmq.entrypoints=amqp"
+      - "traefik.tcp.routers.rabbitmq.rule=HostSNI(`*`)"
+      - "traefik.tcp.services.rabbitmq.loadbalancer.server.port=5672"
+
+  rabbitmq-2:
+    image: rabbitmq:4.1-rc-management-alpine
+    container_name: node-2
+    depends_on:
+      - rabbitmq-1
+    entrypoint: [ '/etc/local_config/entry_join_cluster.sh' ]
+    hostname: rabbitmq-node-2
+    networks:
+      - rabbitmq_network
+    environment:
+      QUEUE_NAME: ${TEST_QUEUE_NAME} # getting queue name from .env file this time.
+      JOIN_CLUSTER: ${MASTER_NODE_NAME}
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE} #getting from env file, and it should be same for all nodes to form a cluster
+    volumes:
+      - ./_config:/etc/local_config #volumn mount to docker location, so we can use our custom entrypoint.sh
+      - rabbitmq_data_2:/var/lib/rabbitmq
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.rabbitmq.entrypoints=amqp"
+      - "traefik.tcp.routers.rabbitmq.rule=HostSNI(`*`)"
+      - "traefik.tcp.services.rabbitmq.loadbalancer.server.port=5672"
+
+  rabbitmq-3:
+    image: rabbitmq:4.1-rc-management-alpine
+    container_name: node-3
+    depends_on:
+      - rabbitmq-1
+    entrypoint: [ '/etc/local_config/entry_join_cluster.sh' ]
+    hostname: rabbitmq-node-3
+    networks:
+      - rabbitmq_network
+    environment:
+      QUEUE_NAME: ${TEST_QUEUE_NAME} # getting queue name from .env file this time.
+      JOIN_CLUSTER: ${MASTER_NODE_NAME}
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE} #getting from env file, and it should be same for all nodes to form a cluster
+    volumes:
+      - ./_config:/etc/local_config #volumn mount to docker location, so we can use our custom entrypoint.sh
+      - rabbitmq_data_3:/var/lib/rabbitmq
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.rabbitmq.entrypoints=amqp"
+      - "traefik.tcp.routers.rabbitmq.rule=HostSNI(`*`)"
+      - "traefik.tcp.services.rabbitmq.loadbalancer.server.port=5672"
+networks:
+  rabbitmq_network:
+    driver: bridge
+
+volumes:
+  rabbitmq_data_1:
+  rabbitmq_data_2:
+  rabbitmq_data_3:

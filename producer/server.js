@@ -3,7 +3,7 @@ import { connect } from 'amqplib';
 // user 'producer' is created when starting docker container with password, file: create_user.sh
 // this user must have write permissions on the queue, as well as on amq.default exchange, because when
 // we send a message to a queue, it is actually sent to the default exchange with the queue name as routing key
-const RABBITMQ_URL = 'amqp://producer:producer-password@localhost';
+const RABBITMQ_URL = 'amqp://producer:producer-password@localhost?frameMax=0x2000';
 const QUEUE_NAME = 'test_queue';
 
 let timeout = 2000;
@@ -35,7 +35,7 @@ async function startAndPost() {
         }, timeout);
 
     } catch (error) {
-        console.error(`Error: ${error}`);
+        console.error(`Error: ${error}`, error);
         process.exit(1);
     }
 }

@@ -10,11 +10,12 @@ until rabbitmqctl status 2>/dev/null | grep "OS PID"; do
   sleep 1
 done
 
-echo "[entry] Starting RabbitMQ setup..."
-# run script to create users
+
+echo "[entry] Lets check and join the RabbitMQ cluster..."
+# run script to join cluster
 # and this path should be the same as the one we configured in docker compose volume
-/etc/local_config/create_user.sh
-echo "[entry] RabbitMQ setup completed!"
+/etc/local_config/join_cluster.sh
+echo "[entry] Cluster check and join completed!"
 
 # Keep the container running, its important otherwise the container will stop,
 # as docker-entrypoint.sh is not running in the foreground line #2
