@@ -74,8 +74,8 @@ rabbit-mq-test/
 ├── rabbitmq/
 │   ├── single-node/
 │   │   └── (Docker compose and entry file for creating user/permissions)
-│   └── multi-node/ ⚠️⚠️ coming soon
-│       └── (docker compose and entry file for cluster, and creating user/permission)
+│   └── multi-node/
+│       └── (Docker compose, entry file for creating user/permission, and entry file for joining cluster)
 ├── consumer/
 │   └── (Consumer code and scripts)
 └── producer/
